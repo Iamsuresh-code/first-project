@@ -2,4 +2,4 @@ FROM nginx
 MAINTAINER suresh
 LABEL this is the game to play
 EXPOSE 80
-COPY index.html /var/share/nginx/html/
+COPY index.html /usr/share/nginx/html/
