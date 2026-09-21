@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SURESH · catch the stars</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      user-select: none;
+    }
+
+    body {
+      min-height: 100vh;
+      background: radial-gradient(circle at 30% 10%, #0b1a2e, #030712);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Segoe UI', 'Poppins', system-ui, sans-serif;
+      padding: 16px;
+    }
+
+    .game-wrapper {
+      background: rgba(18, 30, 41, 0.75);
+      backdrop-filter: blur(8px);
+      padding: 24px 24px 30px 24px;
+      border-radius: 64px 64px 48px 48px;
+      box-shadow: 0 25px 40px -10px rgba(0, 0, 0, 0.7), 0 0 0 2px #4e7b9b inset, 0 0 20px #60a5fa55;
+      border: 1px solid #9ac8ff30;
+    }
+
+    .game-panel {
+      background: #101f2b;
+      border-radius: 40px 40px 32px 32px;
+      padding: 16px 16px 12px 16px;
+      box-shadow: inset 0 0 30px #00000050, 0 12px 0 #0a1118;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 10px 12px 10px;
+      color: #eef9ff;
+      text-shadow: 0 2px 5px #00a6ff80, 0 0 10px #2d9cff;
+    }
+
+    .suresh-logo {
+      font-size: 2.3rem;
+      font-weight: 900;
+      letter-spacing: 4px;
+      background: linear-gradient(135deg, #fff6b0, #ffe074, #ffb347);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      filter: drop-shadow(0 0 12px #fbbf24);
+      transform: rotate(-1deg);
+      font-family: 'Poppins', 'Segoe UI', sans-serif;
+      border-right: 3px solid #fbbf24;
+      padding-right: 16px;
+      line-height: 1.2;
+    }
+
+    .scoreboard {
+      background: #1c3142;
+      padding: 8px 20px;
+      border-radius: 40px;
+      box-shadow: inset 0 4px 6px #00000055, 0 4px 0 #0b1b26;
+      display: flex;
+      gap: 20px;
+      font-weight: 700;
+      font-size: 1.4rem;
+      border: 1px solid #aad0ff50;
+    }
+
+    .scoreboard span {
+      color: #b3e4ff;
+      text-shadow: 0 0 8px #00a3ff;
+    }
+
+    .scoreboard .score-value {
+      color: #fde047;
+      font-size: 1.8rem;
+      margin-left: 6px;
+      min-width: 65px;
+      display: inline-block;
+      text-align: right;
+      font-weight: 900;
+      text-shadow: 0 0 15px #fbbf24, 0 0 30px #f59e0b;
+    }
+
+    .canvas-container {
+      display: flex;
+      justify-content: center;
+      border-radius: 32px;
+      overflow: hidden;
+      box-shadow: 0 0 0 4px #233b4e, 0 18px 30px -8px black;
+      background: #0b1721;
+      margin-bottom: 6px;
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: auto;
+      max-width: 600px;
+      aspect-ratio: 1 / 1;
+      background: radial-gradient(circle at 20% 20%, #1e3c4e, #0b141e);
+      cursor: pointer;
+      transition: filter 0.2s;
+    }
+
+    canvas:active {
+      filter: brightness(1.1);
+    }
+
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 18px 0 18px;
+      color: #b9d9f0;
+    }
+
+    .restart-btn {
+      background: linear-gradient(145deg, #2d4b62, #162b38);
+      border: none;
+      padding: 10px 28px;
+      border-radius: 40px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      letter-spacing: 1px;
+      color: #e3f0ff;
+      box-shadow: 0 7px 0 #0c1a22, 0 8px 18px #00000070;
+      cursor: pointer;
+      transition: all 0.06s linear;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid #83b9e0;
+    }
+
+    .restart-btn:active {
+      transform: translateY(5px);
+      box-shadow: 0 2px 0 #0c1a22, 0 8px 18px #00000070;
+    }
+
+    .hint {
+      font-size: 1rem;
+      background: #152f3e80;
+      padding: 6px 20px;
+      border-radius: 50px;
+      border: 1px solid #5599cc60;
+      backdrop-filter: blur(5px);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .hint i {
+      font-style: normal;
+      font-size: 1.3rem;
+      filter: drop-shadow(0 0 6px gold);
+    }
+
+    .message {
+      text-align: center;
+      font-size: 1.2rem;
+      min-height: 34px;
+      color: #f0e68c;
+      font-weight: 600;
+      text-shadow: 0 0 20px #ffd966;
+      letter-spacing: 1px;
+      transition: all 0.2s;
+      margin-bottom: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="game-wrapper">
+    <div class="game-panel">
+      <div class="header">
+        <div class="suresh-logo">SURESH</div>
+        <div class="scoreboard">
+          <span>⭐</span>
+          <span class="score-value" id="scoreDisplay">0</span>
+        </div>
+      </div>
+
+      <div class="canvas-container">
+        <canvas id="gameCanvas" width="600" height="600"></canvas>
+      </div>
+
+      <div class="message" id="messageBox">✨ catch the stars ✨</div>
+
+      <div class="controls">
+        <button class="restart-btn" id="restartButton">
+          <span>⟳</span> RESTART
+        </button>
+        <div class="hint">
+          <i>👆</i> click / tap falling stars
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      const canvas = document.getElementById('gameCanvas');
+      const ctx = canvas.getContext('2d');
+      const scoreSpan = document.getElementById('scoreDisplay');
+      const messageBox = document.getElementById('messageBox');
+
+      // --- game settings ---
+      const GAME_WIDTH = 600;
+      const GAME_HEIGHT = 600;
+      const STAR_COUNT = 7;          // max stars on screen
+      const STAR_BASE_RADIUS = 24;
+      const CATCH_RADIUS = 35;       // click tolerance
+      const GRAVITY = 0.12;          // per frame^2
+      const MAX_FALL_SPEED = 3.5;
+      const SPAWN_RATE = 42;         // frames between spawns (lower = more)
+      const STAR_LIFETIME = 200;     // frames before star fades? (we use offscreen removal)
+
+      // --- state ---
+      let stars = [];
+      let score = 0;
+      let frameCount = 0;
+      let gameActive = true;
+
+      // --- helper functions ---
+      function random(min, max) {
+        return Math.random() * (max - min) + min;
+      }
+
+      // star color palette (golden, warm, glowing)
+      const starColors = [
+        { main: '#FFD966', glow: '#FFB347', core: '#FFF2B5' },
+        { main: '#F9E076', glow: '#F4B942', core: '#FFF7C0' },
+        { main: '#FFC857', glow: '#E6A817', core: '#FFE68F' },
+        { main: '#FFDD88', glow: '#F9A826', core: '#FFF1C1' },
+      ];
+
+      // --- create a star object ---
+      function createStar() {
+        const radius = random(16, 28);
+        const x = random(radius + 10, GAME_WIDTH - radius - 10);
+        const y = -radius - random(10, 40); // start slightly above canvas
+        const vy = random(0.9, 2.0);
+        const vx = random(-0.6, 0.6);
+        const colorSet = starColors[Math.floor(Math.random() * starColors.length)];
+        const rotation = random(0, Math.PI * 2);
+        const rotSpeed = random(-0.025, 0.025);
+        const pulsePhase = random(0, Math.PI * 2);
+        
+        return {
+          x, y,
+          vx, vy,
+          radius,
+          colorMain: colorSet.main,
+          colorGlow: colorSet.glow,
+          colorCore: colorSet.core,
+          rotation,
+          rotSpeed,
+          pulsePhase,
+          // for smooth removal if needed (not used heavily)
+          age: 0,
+        };
+      }
+
+      // --- spawn stars, respecting max count ---
+      function spawnStars() {
+        if (stars.length >= STAR_COUNT) return;
+        // spawn 1 or 2 if count low, using random
+        const toSpawn = Math.min(STAR_COUNT - stars.length, Math.random() < 0.25 ? 2 : 1);
+        for (let i = 0; i < toSpawn; i++) {
+          stars.push(createStar());
+        }
+      }
+
+      // --- reset game ---
+      function resetGame() {
+        stars = [];
+        score = 0;
+        frameCount = 0;
+        gameActive = true;
+        scoreSpan.textContent = '0';
+        messageBox.textContent = '✨ catch the stars ✨';
+        // spawn initial stars
+        for (let i = 0; i < 3; i++) {
+          stars.push(createStar());
+        }
+      }
+
+      // --- update game state each frame ---
+      function updateGame() {
+        if (!gameActive) return;
+
+        frameCount++;
+
+        // spawn new stars at intervals
+        if (frameCount % SPAWN_RATE === 0) {
+          spawnStars();
+        }
+
+        // update each star
+        for (let i = stars.length - 1; i >= 0; i--) {
+          const s = stars[i];
+
+          // apply gravity and movement
+          s.vy += GRAVITY * 0.5; // gentle gravity
+          if (s.vy > MAX_FALL_SPEED) s.vy = MAX_FALL_SPEED;
+          s.x += s.vx;
+          s.y += s.vy;
+
+          // horizontal boundary bounce / clamp (soft)
+          if (s.x - s.radius < 0) {
+            s.x = s.radius;
+            s.vx *= -0.5;
+          } else if (s.x + s.radius > GAME_WIDTH) {
+            s.x = GAME_WIDTH - s.radius;
+            s.vx *= -0.5;
+          }
+
+          // rotation update
+          s.rotation += s.rotSpeed;
+          s.pulsePhase += 0.05;
+          s.age++;
+
+          // remove stars that go below canvas + buffer
+          if (s.y - s.radius > GAME_HEIGHT + 40) {
+            stars.splice(i, 1);
+            continue;
+          }
+
+          // optional: tiny probability to remove if too old? no, we keep them falling.
+        }
+
+        // subtle message change
+        if (score > 0 && score % 25 === 0 && frameCount % 45 === 0) {
+          // avoid spamming, but could give feedback
+        }
+      }
+
+      // --- draw everything ---
+      function draw() {
+        ctx.clearRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+
+        // draw background stars (static sparkle)
+        ctx.save();
+        ctx.shadowBlur = 0;
+        for (let i = 0; i < 80; i++) {
+          const sx = (i * 179) % GAME_WIDTH;
+          const sy = (i * 367) % GAME_HEIGHT;
+          const brightness = 0.3 + 0.2 * Math.sin(frameCount * 0.02 + i);
+          ctx.fillStyle = `rgba(255, 240, 180, ${brightness * 0.7})`;
+          ctx.beginPath();
+          ctx.arc(sx, sy, 1.5 + (i % 3), 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.restore();
+
+        // draw each star
+        for (let s of stars) {
+          const pulse = 1 + 0.12 * Math.sin(s.pulsePhase);
+          const drawRadius = s.radius * pulse;
+
+          ctx.save();
+          ctx.translate(s.x, s.y);
+          ctx.rotate(s.rotation);
+
+          // outer glow
+          ctx.shadowColor = s.colorGlow;
+          ctx.shadowBlur = 35;
+          ctx.shadowOffsetX = 0;
+          ctx.shadowOffsetY = 0;
+
+          // draw star shape (5-pointed)
+          drawStar(ctx, 0, 0, 5, drawRadius * 0.9, drawRadius * 0.4);
+          ctx.fillStyle = s.colorMain;
+          ctx.fill();
+
+          // inner glow / core
+          ctx.shadowBlur = 28;
+          ctx.shadowColor = s.colorCore;
+          drawStar(ctx, 0, 0, 5, drawRadius * 0.65, drawRadius * 0.28);
+          ctx.fillStyle = s.colorCore;
+          ctx.fill();
+
+          // extra bright center
+          ctx.shadowBlur = 18;
+          ctx.shadowColor = '#FFF9D4';
+          ctx.beginPath();
+          ctx.arc(0, 0, drawRadius * 0.3, 0, Math.PI * 2);
+          ctx.fillStyle = '#FFFFFFDD';
+          ctx.fill();
+
+          ctx.restore();
+        }
+
+        // draw score inside canvas? (already top panel)
+      }
+
+      // helper to draw star shape
+      function drawStar(ctx, cx, cy, spikes, outerR, innerR) {
+        let rot = Math.PI / 2 * 3;
+        const step = Math.PI / spikes;
+        ctx.beginPath();
+        for (let i = 0; i < spikes; i++) {
+          const x1 = cx + Math.cos(rot) * outerR;
+          const y1 = cy + Math.sin(rot) * outerR;
+          ctx.lineTo(x1, y1);
+          rot += step;
+
+          const x2 = cx + Math.cos(rot) * innerR;
+          const y2 = cy + Math.sin(rot) * innerR;
+          ctx.lineTo(x2, y2);
+          rot += step;
+        }
+        ctx.closePath();
+      }
+
+      // --- handle click on canvas (catching stars) ---
+      function handleCanvasClick(e) {
+        if (!gameActive) return;
+
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas.width / rect.width;   // canvas physical size / display size
+        const scaleY = canvas.height / rect.height;
+
+        let clientX, clientY;
+
+        if (e.touches) {
+          // touch event
+          clientX = e.touches[0].clientX;
+          clientY = e.touches[0].clientY;
+          e.preventDefault();
+        } else {
+          clientX = e.clientX;
+          clientY = e.clientY;
+        }
+
+        const canvasX = (clientX - rect.left) * scaleX;
+        const canvasY = (clientY - rect.top) * scaleY;
+
+        // check collision with stars (from topmost / last to first)
+        for (let i = stars.length - 1; i >= 0; i--) {
+          const s = stars[i];
+          const dx = canvasX - s.x;
+          const dy = canvasY - s.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          const catchDist = s.radius + CATCH_RADIUS;
+
+          if (dist <= catchDist) {
+            // caught!
+            stars.splice(i, 1);
+            score++;
+            scoreSpan.textContent = score;
+
+            // visual feedback
+            if (score === 1) messageBox.textContent = '🌟 great!';
+            else if (score === 10) messageBox.textContent = '🔥 you are on fire!';
+            else if (score === 25) messageBox.textContent = '💫 SURESH power!';
+            else if (score === 50) messageBox.textContent = '🏆 legend!';
+            else if (score % 20 === 0) messageBox.textContent = `✨ ${score} stars ✨`;
+            else messageBox.textContent = '⭐ +1';
+
+            // small audio-less feedback, just redraw
+            break; // only catch one star per click
+          }
+        }
+      }
+
+      // --- game loop ---
+      function gameLoop() {
+        if (gameActive) {
+          updateGame();
+        }
+        draw();
+        requestAnimationFrame(gameLoop);
+      }
+
+      // --- restart ---
+      function restartGame() {
+        resetGame();
+        messageBox.textContent = '✨ catch the stars ✨';
+        // ensure stars are not empty
+        if (stars.length === 0) {
+          for (let i = 0; i < 3; i++) stars.push(createStar());
+        }
+      }
+
+      // --- event listeners ---
+      canvas.addEventListener('click', handleCanvasClick);
+      canvas.addEventListener('touchstart', (e) => {
+        e.preventDefault(); // prevent scrolling
+        handleCanvasClick(e);
+      }, { passive: false });
+
+      document.getElementById('restartButton').addEventListener('click', restartGame);
+
+      // prevent context menu on canvas
+      canvas.addEventListener('contextmenu', (e) => e.preventDefault());
+
+      // initialize
+      resetGame();
+
+      // start the loop
+      gameLoop();
+    })();
+  </script>
+</body>
+</html>
