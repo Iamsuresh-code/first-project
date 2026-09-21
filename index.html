@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SURESH · catch the stars</title>
+  <title>SURESH · cosmic defender</title>
   <style>
     * {
       margin: 0;
@@ -14,503 +14,944 @@
 
     body {
       min-height: 100vh;
-      background: radial-gradient(circle at 30% 10%, #0b1a2e, #030712);
+      background: #060a12;
       display: flex;
       justify-content: center;
       align-items: center;
-      font-family: 'Segoe UI', 'Poppins', system-ui, sans-serif;
-      padding: 16px;
+      font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+      padding: 20px;
     }
 
-    .game-wrapper {
-      background: rgba(18, 30, 41, 0.75);
-      backdrop-filter: blur(8px);
-      padding: 24px 24px 30px 24px;
-      border-radius: 64px 64px 48px 48px;
-      box-shadow: 0 25px 40px -10px rgba(0, 0, 0, 0.7), 0 0 0 2px #4e7b9b inset, 0 0 20px #60a5fa55;
-      border: 1px solid #9ac8ff30;
-    }
-
-    .game-panel {
-      background: #101f2b;
-      border-radius: 40px 40px 32px 32px;
-      padding: 16px 16px 12px 16px;
-      box-shadow: inset 0 0 30px #00000050, 0 12px 0 #0a1118;
-    }
-
-    .header {
+    /* ===== DASHBOARD CONTAINER ===== */
+    .dashboard {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0 10px 12px 10px;
-      color: #eef9ff;
-      text-shadow: 0 2px 5px #00a6ff80, 0 0 10px #2d9cff;
+      gap: 16px;
+      background: #0a1119;
+      padding: 18px;
+      border-radius: 28px;
+      box-shadow:
+        0 40px 80px -20px #000,
+        0 0 0 1px #1c2b3d,
+        0 0 60px #0ea5e915;
+      max-width: 1100px;
+      width: 100%;
     }
 
-    .suresh-logo {
-      font-size: 2.3rem;
+    /* ===== LEFT PANEL (main game) ===== */
+    .main-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .game-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 4px 6px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-mark {
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #0ea5e9, #6366f1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 1.6rem;
+      color: #fff;
+      box-shadow: 0 0 24px #0ea5e980, inset 0 0 12px #ffffff40;
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.05;
+    }
+
+    .brand-text .title {
+      font-size: 1.55rem;
       font-weight: 900;
       letter-spacing: 4px;
-      background: linear-gradient(135deg, #fff6b0, #ffe074, #ffb347);
+      background: linear-gradient(90deg, #7dd3fc, #a78bfa, #f0abfc);
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
-      filter: drop-shadow(0 0 12px #fbbf24);
-      transform: rotate(-1deg);
-      font-family: 'Poppins', 'Segoe UI', sans-serif;
-      border-right: 3px solid #fbbf24;
-      padding-right: 16px;
-      line-height: 1.2;
     }
 
-    .scoreboard {
-      background: #1c3142;
-      padding: 8px 20px;
-      border-radius: 40px;
-      box-shadow: inset 0 4px 6px #00000055, 0 4px 0 #0b1b26;
+    .brand-text .sub {
+      font-size: 0.68rem;
+      letter-spacing: 3.5px;
+      color: #64748b;
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    .live-badge {
       display: flex;
-      gap: 20px;
+      align-items: center;
+      gap: 8px;
+      background: #0f1b28;
+      border: 1px solid #1e3a52;
+      padding: 7px 16px;
+      border-radius: 40px;
+      font-size: 0.75rem;
       font-weight: 700;
-      font-size: 1.4rem;
-      border: 1px solid #aad0ff50;
+      letter-spacing: 1.5px;
+      color: #94a3b8;
     }
 
-    .scoreboard span {
-      color: #b3e4ff;
-      text-shadow: 0 0 8px #00a3ff;
+    .live-badge .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #22d3ee;
+      box-shadow: 0 0 10px #22d3ee;
+      animation: pulse 1.6s infinite;
     }
 
-    .scoreboard .score-value {
-      color: #fde047;
-      font-size: 1.8rem;
-      margin-left: 6px;
-      min-width: 65px;
-      display: inline-block;
-      text-align: right;
-      font-weight: 900;
-      text-shadow: 0 0 15px #fbbf24, 0 0 30px #f59e0b;
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.75); }
     }
 
-    .canvas-container {
+    /* ===== CANVAS AREA ===== */
+    .canvas-wrapper {
+      position: relative;
+      border-radius: 20px;
+      overflow: hidden;
+      background: #040810;
+      box-shadow:
+        inset 0 0 0 1px #16273a,
+        0 20px 40px -20px #000;
       display: flex;
       justify-content: center;
-      border-radius: 32px;
-      overflow: hidden;
-      box-shadow: 0 0 0 4px #233b4e, 0 18px 30px -8px black;
-      background: #0b1721;
-      margin-bottom: 6px;
     }
 
     canvas {
       display: block;
       width: 100%;
       height: auto;
-      max-width: 600px;
+      max-width: 560px;
       aspect-ratio: 1 / 1;
-      background: radial-gradient(circle at 20% 20%, #1e3c4e, #0b141e);
-      cursor: pointer;
-      transition: filter 0.2s;
+      cursor: crosshair;
     }
 
-    canvas:active {
-      filter: brightness(1.1);
-    }
-
-    .controls {
+    /* overlay for "pause / game over" */
+    .overlay-msg {
+      position: absolute;
+      inset: 0;
       display: flex;
-      justify-content: space-between;
+      flex-direction: column;
       align-items: center;
-      padding: 8px 18px 0 18px;
-      color: #b9d9f0;
-    }
-
-    .restart-btn {
-      background: linear-gradient(145deg, #2d4b62, #162b38);
-      border: none;
-      padding: 10px 28px;
-      border-radius: 40px;
-      font-weight: 700;
-      font-size: 1.1rem;
-      letter-spacing: 1px;
-      color: #e3f0ff;
-      box-shadow: 0 7px 0 #0c1a22, 0 8px 18px #00000070;
-      cursor: pointer;
-      transition: all 0.06s linear;
-      text-transform: uppercase;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      border: 1px solid #83b9e0;
-    }
-
-    .restart-btn:active {
-      transform: translateY(5px);
-      box-shadow: 0 2px 0 #0c1a22, 0 8px 18px #00000070;
-    }
-
-    .hint {
-      font-size: 1rem;
-      background: #152f3e80;
-      padding: 6px 20px;
-      border-radius: 50px;
-      border: 1px solid #5599cc60;
-      backdrop-filter: blur(5px);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .hint i {
-      font-style: normal;
-      font-size: 1.3rem;
-      filter: drop-shadow(0 0 6px gold);
-    }
-
-    .message {
+      justify-content: center;
+      gap: 14px;
+      background: #030712cc;
+      backdrop-filter: blur(6px);
       text-align: center;
-      font-size: 1.2rem;
-      min-height: 34px;
-      color: #f0e68c;
-      font-weight: 600;
-      text-shadow: 0 0 20px #ffd966;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+
+    .overlay-msg.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .overlay-msg h2 {
+      font-size: 2.4rem;
+      font-weight: 900;
+      letter-spacing: 6px;
+      background: linear-gradient(135deg, #f87171, #fbbf24);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .overlay-msg p {
+      color: #cbd5e1;
+      font-size: 1rem;
       letter-spacing: 1px;
-      transition: all 0.2s;
-      margin-bottom: 4px;
+    }
+
+    .overlay-msg .big-score {
+      font-size: 3rem;
+      font-weight: 900;
+      color: #fbbf24;
+      text-shadow: 0 0 30px #f59e0b;
+    }
+
+    /* ===== BOTTOM CONTROL BAR ===== */
+    .control-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: #0d1622;
+      border: 1px solid #1a2c40;
+      padding: 12px 18px;
+      border-radius: 18px;
+    }
+
+    .keys-hint {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      color: #7c8fa6;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .key {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      background: #16273a;
+      border: 1px solid #28425e;
+      color: #b8d4f0;
+      font-size: 0.9rem;
+      font-weight: 800;
+      box-shadow: 0 3px 0 #0a141f;
+    }
+
+    .btn {
+      border: none;
+      cursor: pointer;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      font-size: 0.8rem;
+      border-radius: 12px;
+      padding: 11px 24px;
+      color: #fff;
+      transition: transform 0.08s, box-shadow 0.08s;
+      text-transform: uppercase;
+    }
+
+    .btn:active {
+      transform: translateY(2px);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #0ea5e9, #6366f1);
+      box-shadow: 0 5px 0 #083a5e, 0 8px 20px #0ea5e955;
+    }
+
+    .btn-primary:active {
+      box-shadow: 0 2px 0 #083a5e, 0 8px 20px #0ea5e955;
+    }
+
+    .btn-ghost {
+      background: #16273a;
+      border: 1px solid #28425e;
+      color: #b8d4f0;
+      box-shadow: 0 5px 0 #0a141f;
+    }
+
+    .btn-ghost:active {
+      box-shadow: 0 2px 0 #0a141f;
+    }
+
+    /* ===== RIGHT SIDEBAR (stats) ===== */
+    .sidebar {
+      width: 230px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+
+    .stat-card {
+      background: #0d1622;
+      border: 1px solid #1a2c40;
+      border-radius: 16px;
+      padding: 16px 18px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--accent, #0ea5e9);
+      box-shadow: 0 0 18px var(--accent, #0ea5e9);
+    }
+
+    .stat-card .label {
+      font-size: 0.68rem;
+      letter-spacing: 2px;
+      color: #64748b;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .stat-card .value {
+      font-size: 2rem;
+      font-weight: 900;
+      color: #e2e8f0;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .stat-card .value.glow {
+      color: #fbbf24;
+      text-shadow: 0 0 24px #f59e0b;
+    }
+
+    .stat-card .unit {
+      font-size: 0.8rem;
+      color: #475569;
+      font-weight: 600;
+      margin-left: 4px;
+    }
+
+    .mini-bar {
+      margin-top: 12px;
+      height: 7px;
+      border-radius: 40px;
+      background: #16273a;
+      overflow: hidden;
+    }
+
+    .mini-bar .fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 40px;
+      background: linear-gradient(90deg, #0ea5e9, #a78bfa);
+      box-shadow: 0 0 14px #6366f1;
+      transition: width 0.3s ease;
+    }
+
+    .mission-box {
+      background: linear-gradient(150deg, #0e1c2e, #0a1119);
+      border: 1px solid #1e3a52;
+      border-radius: 16px;
+      padding: 16px 18px;
+    }
+
+    .mission-box h4 {
+      font-size: 0.7rem;
+      letter-spacing: 2.5px;
+      color: #38bdf8;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+    }
+
+    .mission-box .msg {
+      font-size: 0.82rem;
+      color: #94a3b8;
+      line-height: 1.55;
+      font-weight: 500;
+      min-height: 56px;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 880px) {
+      .dashboard {
+        flex-direction: column;
+        max-width: 620px;
+      }
+      .sidebar {
+        width: 100%;
+        flex-direction: row;
+        flex-wrap: wrap;
+      }
+      .stat-card, .mission-box {
+        flex: 1;
+        min-width: 150px;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .brand-text .title { font-size: 1.2rem; letter-spacing: 2px; }
+      .brand-mark { width: 38px; height: 38px; font-size: 1.3rem; }
+      .live-badge { display: none; }
+      .keys-hint span.txt { display: none; }
+      .control-bar { padding: 10px 12px; }
+      .btn { padding: 10px 16px; font-size: 0.72rem; }
+      .sidebar { flex-direction: column; }
     }
   </style>
 </head>
 <body>
-  <div class="game-wrapper">
-    <div class="game-panel">
-      <div class="header">
-        <div class="suresh-logo">SURESH</div>
-        <div class="scoreboard">
-          <span>⭐</span>
-          <span class="score-value" id="scoreDisplay">0</span>
+
+<div class="dashboard">
+
+  <!-- ========== MAIN GAME AREA ========== -->
+  <div class="main-panel">
+
+    <!-- Header -->
+    <div class="game-header">
+      <div class="brand">
+        <div class="brand-mark">S</div>
+        <div class="brand-text">
+          <span class="title">SURESH</span>
+          <span class="sub">COSMIC DEFENDER</span>
         </div>
       </div>
-
-      <div class="canvas-container">
-        <canvas id="gameCanvas" width="600" height="600"></canvas>
+      <div class="live-badge">
+        <span class="dot"></span> SYSTEM ONLINE
       </div>
+    </div>
 
-      <div class="message" id="messageBox">✨ catch the stars ✨</div>
+    <!-- Canvas -->
+    <div class="canvas-wrapper">
+      <canvas id="gameCanvas" width="600" height="600"></canvas>
+      <div class="overlay-msg" id="overlay">
+        <h2 id="overlayTitle">GAME OVER</h2>
+        <p>FINAL SCORE</p>
+        <div class="big-score" id="overlayScore">0</div>
+        <button class="btn btn-primary" id="overlayRestart">⟳ PLAY AGAIN</button>
+      </div>
+    </div>
 
-      <div class="controls">
-        <button class="restart-btn" id="restartButton">
-          <span>⟳</span> RESTART
-        </button>
-        <div class="hint">
-          <i>👆</i> click / tap falling stars
-        </div>
+    <!-- Control bar -->
+    <div class="control-bar">
+      <div class="keys-hint">
+        <span class="key">◀</span>
+        <span class="key">▶</span>
+        <span class="txt">MOVE SHIP</span>
+      </div>
+      <div style="display:flex; gap:10px;">
+        <button class="btn btn-ghost" id="pauseBtn">⏸ PAUSE</button>
+        <button class="btn btn-primary" id="restartBtn">⟳ RESTART</button>
       </div>
     </div>
   </div>
 
-  <script>
-    (function() {
-      const canvas = document.getElementById('gameCanvas');
-      const ctx = canvas.getContext('2d');
-      const scoreSpan = document.getElementById('scoreDisplay');
-      const messageBox = document.getElementById('messageBox');
+  <!-- ========== SIDEBAR STATS ========== -->
+  <aside class="sidebar">
 
-      // --- game settings ---
-      const GAME_WIDTH = 600;
-      const GAME_HEIGHT = 600;
-      const STAR_COUNT = 7;          // max stars on screen
-      const STAR_BASE_RADIUS = 24;
-      const CATCH_RADIUS = 35;       // click tolerance
-      const GRAVITY = 0.12;          // per frame^2
-      const MAX_FALL_SPEED = 3.5;
-      const SPAWN_RATE = 42;         // frames between spawns (lower = more)
-      const STAR_LIFETIME = 200;     // frames before star fades? (we use offscreen removal)
+    <div class="stat-card" style="--accent:#fbbf24;">
+      <div class="label">Current Score</div>
+      <div class="value glow" id="scoreVal">0</div>
+      <div class="mini-bar"><div class="fill" id="scoreBar"></div></div>
+    </div>
 
-      // --- state ---
-      let stars = [];
-      let score = 0;
-      let frameCount = 0;
-      let gameActive = true;
+    <div class="stat-card" style="--accent:#22d3ee;">
+      <div class="label">High Score</div>
+      <div class="value" id="highScoreVal">0</div>
+    </div>
 
-      // --- helper functions ---
-      function random(min, max) {
-        return Math.random() * (max - min) + min;
+    <div class="stat-card" style="--accent:#a78bfa;">
+      <div class="label">Threat Level</div>
+      <div class="value" id="levelVal">1<span class="unit">/10</span></div>
+    </div>
+
+    <div class="stat-card" style="--accent:#34d399;">
+      <div class="label">Survival Time</div>
+      <div class="value" id="timeVal">0<span class="unit">s</span></div>
+    </div>
+
+    <div class="mission-box">
+      <h4>◆ Mission Log</h4>
+      <div class="msg" id="missionMsg">Awaiting launch... Use arrow keys to navigate your ship through the asteroid field.</div>
+    </div>
+
+  </aside>
+</div>
+
+<script>
+(function () {
+  /* ==============================
+     CANVAS SETUP
+  ============================== */
+  const canvas = document.getElementById('gameCanvas');
+  const ctx    = canvas.getContext('2d');
+
+  const W = 600, H = 600;
+
+  /* ==============================
+     DOM REFERENCES
+  ============================== */
+  const scoreVal     = document.getElementById('scoreVal');
+  const highScoreVal = document.getElementById('highScoreVal');
+  const levelVal     = document.getElementById('levelVal');
+  const timeVal      = document.getElementById('timeVal');
+  const scoreBar     = document.getElementById('scoreBar');
+  const missionMsg   = document.getElementById('missionMsg');
+  const overlay      = document.getElementById('overlay');
+  const overlayTitle = document.getElementById('overlayTitle');
+  const overlayScore = document.getElementById('overlayScore');
+
+  /* ==============================
+     GAME CONFIG
+  ============================== */
+  const CONFIG = {
+    playerSize: 34,
+    playerSpeed: 6.5,
+    baseSpawnRate: 45,      // frames between asteroid spawns
+    minSpawnRate: 14,
+    baseAsteroidSpeed: 2.2,
+    maxAsteroidSpeed: 6.5,
+    starCount: 90,
+    maxLevel: 10
+  };
+
+  /* ==============================
+     STATE
+  ============================== */
+  let player = { x: W / 2, y: H - 90, size: CONFIG.playerSize };
+  let asteroids = [];
+  let bullets   = [];        // player projectiles (auto-fire)
+  let particles = [];        // explosion particles
+  let bgStars   = [];
+  let score     = 0;
+  let highScore = Number(localStorage.getItem('suresh_cosmic_high')) || 0;
+  let frame     = 0;
+  let elapsed   = 0;         // in seconds
+  let gameState = 'ready';   // ready | playing | paused | over
+  let keys = { left: false, right: false };
+  let shootCooldown = 0;
+  let level = 1;
+
+  /* ==============================
+     INIT BACKGROUND STARS
+  ============================== */
+  function initStars() {
+    bgStars = [];
+    for (let i = 0; i < CONFIG.starCount; i++) {
+      bgStars.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        r: Math.random() * 1.6 + 0.4,
+        speed: Math.random() * 0.35 + 0.08,
+        twinkle: Math.random() * Math.PI * 2
+      });
+    }
+  }
+
+  /* ==============================
+     SPAWN ASTEROID
+  ============================== */
+  function spawnAsteroid() {
+    const size  = 16 + Math.random() * 26;
+    const x     = size + Math.random() * (W - size * 2);
+    const y     = -size - 10;
+    const speed = Math.min(
+      CONFIG.maxAsteroidSpeed,
+      CONFIG.baseAsteroidSpeed + level * 0.38 + Math.random() * 0.8
+    );
+    const rot   = Math.random() * Math.PI * 2;
+    const rotSp = (Math.random() - 0.5) * 0.06;
+    const hue   = 200 + Math.random() * 60;  // blue / cyan / violet
+
+    asteroids.push({ x, y, size, speed, rot, rotSp, hue, hp: 1 });
+  }
+
+  /* ==============================
+     SPAWN EXPLOSION PARTICLES
+  ============================== */
+  function spawnParticles(x, y, color, count = 14) {
+    for (let i = 0; i < count; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const spd   = Math.random() * 3.5 + 1;
+      particles.push({
+        x, y,
+        vx: Math.cos(angle) * spd,
+        vy: Math.sin(angle) * spd,
+        life: 1,
+        decay: 0.02 + Math.random() * 0.03,
+        size: Math.random() * 3.5 + 1.5,
+        color
+      });
+    }
+  }
+
+  /* ==============================
+     RESET GAME
+  ============================== */
+  function resetGame() {
+    player = { x: W / 2, y: H - 90, size: CONFIG.playerSize };
+    asteroids = [];
+    bullets   = [];
+    particles = [];
+    score     = 0;
+    frame     = 0;
+    elapsed   = 0;
+    level     = 1;
+    shootCooldown = 0;
+    gameState = 'playing';
+    overlay.classList.remove('show');
+    missionMsg.textContent = 'Launch successful! Navigate through the asteroid field.';
+    updateHUD();
+    initStars();
+  }
+
+  /* ==============================
+     UPDATE HUD
+  ============================== */
+  function updateHUD() {
+    scoreVal.textContent = score;
+    highScoreVal.textContent = highScore;
+
+    // Threat level
+    level = Math.min(CONFIG.maxLevel, 1 + Math.floor(score / 8));
+    levelVal.innerHTML = level + '<span class="unit">/10</span>';
+
+    // Survival time
+    timeVal.innerHTML = Math.floor(elapsed) + '<span class="unit">s</span>';
+
+    // Score progress bar (loop every 100 pts for visual feedback)
+    const pct = (score % 100);
+    scoreBar.style.width = pct + '%';
+  }
+
+  /* ==============================
+     COLLISION DETECTION
+  ============================== */
+  function circleRectCollide(cx, cy, r, rx, ry, rw, rh) {
+    const nearestX = Math.max(rx, Math.min(cx, rx + rw));
+    const nearestY = Math.max(ry, Math.min(cy, ry + rh));
+    const dx = cx - nearestX;
+    const dy = cy - nearestY;
+    return (dx * dx + dy * dy) < r * r;
+  }
+
+  function dist(x1, y1, x2, y2) {
+    const dx = x1 - x2, dy = y1 - y2;
+    return Math.sqrt(dx * dx + dy * dy);
+  }
+
+  /* ==============================
+     UPDATE LOOP
+  ============================== */
+  function update() {
+    if (gameState !== 'playing') return;
+
+    frame++;
+    elapsed = frame / 60;   // approx seconds at 60fps
+
+    /* --- Player movement --- */
+    if (keys.left)  player.x -= CONFIG.playerSpeed;
+    if (keys.right) player.x += CONFIG.playerSpeed;
+    player.x = Math.max(player.size / 2 + 6, Math.min(W - player.size / 2 - 6, player.x));
+
+    /* --- Auto-fire --- */
+    shootCooldown--;
+    if (shootCooldown <= 0) {
+      bullets.push({
+        x: player.x,
+        y: player.y - player.size / 2 - 4,
+        vy: -9,
+        r: 3.5
+      });
+      shootCooldown = 10;   // fire every 10 frames
+    }
+
+    /* --- Move bullets --- */
+    for (let i = bullets.length - 1; i >= 0; i--) {
+      const b = bullets[i];
+      b.y += b.vy;
+      if (b.y < -20) bullets.splice(i, 1);
+    }
+
+    /* --- Spawn asteroids --- */
+    const spawnRate = Math.max(CONFIG.minSpawnRate, CONFIG.baseSpawnRate - level * 3);
+    if (frame % Math.floor(spawnRate) === 0) {
+      spawnAsteroid();
+      if (level >= 5 && Math.random() < 0.25) spawnAsteroid();  // double spawn at higher levels
+    }
+
+    /* --- Move asteroids & collision --- */
+    for (let i = asteroids.length - 1; i >= 0; i--) {
+      const a = asteroids[i];
+      a.y += a.speed;
+      a.rot += a.rotSp;
+
+      // Off-screen removal
+      if (a.y - a.size > H + 40) { asteroids.splice(i, 1); continue; }
+
+      // ---- Player collision (game over) ----
+      if (circleRectCollide(
+        a.x, a.y, a.size * 0.85,
+        player.x - player.size / 2, player.y - player.size / 2,
+        player.size, player.size
+      )) {
+        gameOver();
+        spawnParticles(player.x, player.y, '#f87171', 28);
+        return;
       }
 
-      // star color palette (golden, warm, glowing)
-      const starColors = [
-        { main: '#FFD966', glow: '#FFB347', core: '#FFF2B5' },
-        { main: '#F9E076', glow: '#F4B942', core: '#FFF7C0' },
-        { main: '#FFC857', glow: '#E6A817', core: '#FFE68F' },
-        { main: '#FFDD88', glow: '#F9A826', core: '#FFF1C1' },
-      ];
-
-      // --- create a star object ---
-      function createStar() {
-        const radius = random(16, 28);
-        const x = random(radius + 10, GAME_WIDTH - radius - 10);
-        const y = -radius - random(10, 40); // start slightly above canvas
-        const vy = random(0.9, 2.0);
-        const vx = random(-0.6, 0.6);
-        const colorSet = starColors[Math.floor(Math.random() * starColors.length)];
-        const rotation = random(0, Math.PI * 2);
-        const rotSpeed = random(-0.025, 0.025);
-        const pulsePhase = random(0, Math.PI * 2);
-        
-        return {
-          x, y,
-          vx, vy,
-          radius,
-          colorMain: colorSet.main,
-          colorGlow: colorSet.glow,
-          colorCore: colorSet.core,
-          rotation,
-          rotSpeed,
-          pulsePhase,
-          // for smooth removal if needed (not used heavily)
-          age: 0,
-        };
-      }
-
-      // --- spawn stars, respecting max count ---
-      function spawnStars() {
-        if (stars.length >= STAR_COUNT) return;
-        // spawn 1 or 2 if count low, using random
-        const toSpawn = Math.min(STAR_COUNT - stars.length, Math.random() < 0.25 ? 2 : 1);
-        for (let i = 0; i < toSpawn; i++) {
-          stars.push(createStar());
+      // ---- Bullet collision ----
+      let destroyed = false;
+      for (let j = bullets.length - 1; j >= 0; j--) {
+        const b = bullets[j];
+        if (dist(a.x, a.y, b.x, b.y) < a.size + b.r) {
+          bullets.splice(j, 1);
+          destroyed = true;
+          break;
         }
       }
-
-      // --- reset game ---
-      function resetGame() {
-        stars = [];
-        score = 0;
-        frameCount = 0;
-        gameActive = true;
-        scoreSpan.textContent = '0';
-        messageBox.textContent = '✨ catch the stars ✨';
-        // spawn initial stars
-        for (let i = 0; i < 3; i++) {
-          stars.push(createStar());
-        }
+      if (destroyed) {
+        spawnParticles(a.x, a.y, `hsl(${a.hue},80%,65%)`, 16);
+        asteroids.splice(i, 1);
+        score += 5;
+        updateHUD();
+        continue;
       }
 
-      // --- update game state each frame ---
-      function updateGame() {
-        if (!gameActive) return;
+      // ---- Player dodged (passed bottom) → +1 point ----
+      // (handled by off-screen removal above for simplicity; scoring is from shooting)
+    }
 
-        frameCount++;
+    /* --- Particles update --- */
+    for (let i = particles.length - 1; i >= 0; i--) {
+      const p = particles[i];
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vx *= 0.97;
+      p.vy *= 0.97;
+      p.life -= p.decay;
+      if (p.life <= 0) particles.splice(i, 1);
+    }
 
-        // spawn new stars at intervals
-        if (frameCount % SPAWN_RATE === 0) {
-          spawnStars();
-        }
+    /* --- Background stars scroll --- */
+    for (let s of bgStars) {
+      s.y += s.speed;
+      s.twinkle += 0.04;
+      if (s.y > H + 5) { s.y = -5; s.x = Math.random() * W; }
+    }
 
-        // update each star
-        for (let i = stars.length - 1; i >= 0; i--) {
-          const s = stars[i];
+    /* --- Bonus score for survival --- */
+    if (frame % 30 === 0) {
+      score += 1;
+      updateHUD();
+    }
+  }
 
-          // apply gravity and movement
-          s.vy += GRAVITY * 0.5; // gentle gravity
-          if (s.vy > MAX_FALL_SPEED) s.vy = MAX_FALL_SPEED;
-          s.x += s.vx;
-          s.y += s.vy;
+  /* ==============================
+     GAME OVER
+  ============================== */
+  function gameOver() {
+    gameState = 'over';
+    if (score > highScore) {
+      highScore = score;
+      localStorage.setItem('suresh_cosmic_high', highScore);
+    }
+    updateHUD();
 
-          // horizontal boundary bounce / clamp (soft)
-          if (s.x - s.radius < 0) {
-            s.x = s.radius;
-            s.vx *= -0.5;
-          } else if (s.x + s.radius > GAME_WIDTH) {
-            s.x = GAME_WIDTH - s.radius;
-            s.vx *= -0.5;
-          }
+    overlayTitle.textContent = 'GAME OVER';
+    overlayScore.textContent = score;
+    overlay.classList.add('show');
 
-          // rotation update
-          s.rotation += s.rotSpeed;
-          s.pulsePhase += 0.05;
-          s.age++;
+    missionMsg.textContent = `Ship destroyed at score ${score}. The cosmos remembers your courage.`;
+  }
 
-          // remove stars that go below canvas + buffer
-          if (s.y - s.radius > GAME_HEIGHT + 40) {
-            stars.splice(i, 1);
-            continue;
-          }
+  /* ==============================
+     RENDER
+  ============================== */
+  function render() {
+    // Deep space background
+    const grad = ctx.createRadialGradient(W * 0.4, H * 0.3, 50, W / 2, H / 2, H);
+    grad.addColorStop(0, '#0b1a30');
+    grad.addColorStop(0.6, '#050b16');
+    grad.addColorStop(1, '#02040a');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, W, H);
 
-          // optional: tiny probability to remove if too old? no, we keep them falling.
-        }
+    // Background stars
+    for (let s of bgStars) {
+      const alpha = 0.35 + 0.55 * Math.abs(Math.sin(s.twinkle));
+      ctx.fillStyle = `rgba(180, 220, 255, ${alpha})`;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fill();
+    }
 
-        // subtle message change
-        if (score > 0 && score % 25 === 0 && frameCount % 45 === 0) {
-          // avoid spamming, but could give feedback
-        }
+    // ---- Asteroids ----
+    for (let a of asteroids) {
+      ctx.save();
+      ctx.translate(a.x, a.y);
+      ctx.rotate(a.rot);
+
+      // outer glow
+      ctx.shadowColor = `hsl(${a.hue}, 90%, 60%)`;
+      ctx.shadowBlur = 22;
+
+      // rocky body
+      ctx.beginPath();
+      const sides = 7 + Math.floor(a.size / 12);
+      for (let i = 0; i < sides; i++) {
+        const ang = (i / sides) * Math.PI * 2;
+        const r = a.size * (0.78 + Math.random() * 0.22);
+        // use deterministic pseudo-random based on index for stable shape
+        const wobble = 0.82 + 0.18 * Math.sin(i * 3.7 + a.hue);
+        const px = Math.cos(ang) * a.size * wobble;
+        const py = Math.sin(ang) * a.size * wobble;
+        i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
       }
+      ctx.closePath();
 
-      // --- draw everything ---
-      function draw() {
-        ctx.clearRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+      const rockGrad = ctx.createRadialGradient(-a.size * 0.3, -a.size * 0.3, 2, 0, 0, a.size);
+      rockGrad.addColorStop(0, `hsl(${a.hue}, 55%, 42%)`);
+      rockGrad.addColorStop(0.7, `hsl(${a.hue}, 45%, 22%)`);
+      rockGrad.addColorStop(1, `hsl(${a.hue}, 35%, 12%)`);
+      ctx.fillStyle = rockGrad;
+      ctx.fill();
 
-        // draw background stars (static sparkle)
-        ctx.save();
-        ctx.shadowBlur = 0;
-        for (let i = 0; i < 80; i++) {
-          const sx = (i * 179) % GAME_WIDTH;
-          const sy = (i * 367) % GAME_HEIGHT;
-          const brightness = 0.3 + 0.2 * Math.sin(frameCount * 0.02 + i);
-          ctx.fillStyle = `rgba(255, 240, 180, ${brightness * 0.7})`;
-          ctx.beginPath();
-          ctx.arc(sx, sy, 1.5 + (i % 3), 0, Math.PI * 2);
-          ctx.fill();
-        }
-        ctx.restore();
+      // crater details
+      ctx.shadowBlur = 0;
+      ctx.fillStyle = `hsl(${a.hue}, 40%, 18%)`;
+      ctx.beginPath();
+      ctx.arc(-a.size * 0.25, -a.size * 0.2, a.size * 0.2, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(a.size * 0.3, a.size * 0.25, a.size * 0.14, 0, Math.PI * 2);
+      ctx.fill();
 
-        // draw each star
-        for (let s of stars) {
-          const pulse = 1 + 0.12 * Math.sin(s.pulsePhase);
-          const drawRadius = s.radius * pulse;
+      ctx.restore();
+    }
 
-          ctx.save();
-          ctx.translate(s.x, s.y);
-          ctx.rotate(s.rotation);
+    // ---- Bullets ----
+    for (let b of bullets) {
+      ctx.save();
+      ctx.shadowColor = '#22d3ee';
+      ctx.shadowBlur = 16;
+      ctx.fillStyle = '#a5f3fc';
+      ctx.beginPath();
+      ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
 
-          // outer glow
-          ctx.shadowColor = s.colorGlow;
-          ctx.shadowBlur = 35;
-          ctx.shadowOffsetX = 0;
-          ctx.shadowOffsetY = 0;
+    // ---- Particles ----
+    for (let p of particles) {
+      ctx.globalAlpha = p.life;
+      ctx.fillStyle = p.color;
+      ctx.shadowColor = p.color;
+      ctx.shadowBlur = 12;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+    ctx.shadowBlur = 0;
 
-          // draw star shape (5-pointed)
-          drawStar(ctx, 0, 0, 5, drawRadius * 0.9, drawRadius * 0.4);
-          ctx.fillStyle = s.colorMain;
-          ctx.fill();
+    // ---- Player ship ----
+    if (gameState !== 'over' || gameState === 'paused') {
+      const px = player.x;
+      const py = player.y;
+      const s  = player.size;
 
-          // inner glow / core
-          ctx.shadowBlur = 28;
-          ctx.shadowColor = s.colorCore;
-          drawStar(ctx, 0, 0, 5, drawRadius * 0.65, drawRadius * 0.28);
-          ctx.fillStyle = s.colorCore;
-          ctx.fill();
+      ctx.save();
+      ctx.shadowColor = '#38bdf8';
+      ctx.shadowBlur = 24;
 
-          // extra bright center
-          ctx.shadowBlur = 18;
-          ctx.shadowColor = '#FFF9D4';
-          ctx.beginPath();
-          ctx.arc(0, 0, drawRadius * 0.3, 0, Math.PI * 2);
-          ctx.fillStyle = '#FFFFFFDD';
-          ctx.fill();
+      // engine flame
+      const flameLen = 14 + Math.sin(frame * 0.6) * 5;
+      const flameGrad = ctx.createLinearGradient(px, py + s * 0.4, px, py + s * 0.4 + flameLen);
+      flameGrad.addColorStop(0, '#f97316');
+      flameGrad.addColorStop(1, '#fbbf2400');
+      ctx.fillStyle = flameGrad;
+      ctx.beginPath();
+      ctx.moveTo(px - 6, py + s * 0.42);
+      ctx.lineTo(px + 6, py + s * 0.42);
+      ctx.lineTo(px, py + s * 0.42 + flameLen);
+      ctx.closePath();
+      ctx.fill();
 
-          ctx.restore();
-        }
+      // hull
+      const hullGrad = ctx.createLinearGradient(px, py - s / 2, px, py + s / 2);
+      hullGrad.addColorStop(0, '#e0f2fe');
+      hullGrad.addColorStop(0.5, '#38bdf8');
+      hullGrad.addColorStop(1, '#0369a1');
+      ctx.fillStyle = hullGrad;
+      ctx.beginPath();
+      ctx.moveTo(px, py - s * 0.55);                 // nose
+      ctx.lineTo(px + s * 0.42, py + s * 0.28);      // right wing
+      ctx.lineTo(px + s * 0.18, py + s * 0.42);      // right back
+      ctx.lineTo(px - s * 0.18, py + s * 0.42);      // left back
+      ctx.lineTo(px - s * 0.42, py + s * 0.28);      // left wing
+      ctx.closePath();
+      ctx.fill();
 
-        // draw score inside canvas? (already top panel)
-      }
+      // cockpit
+      ctx.shadowBlur = 14;
+      ctx.fillStyle = '#bae6fd';
+      ctx.beginPath();
+      ctx.ellipse(px, py - s * 0.12, s * 0.16, s * 0.26, 0, 0, Math.PI * 2);
+      ctx.fill();
 
-      // helper to draw star shape
-      function drawStar(ctx, cx, cy, spikes, outerR, innerR) {
-        let rot = Math.PI / 2 * 3;
-        const step = Math.PI / spikes;
-        ctx.beginPath();
-        for (let i = 0; i < spikes; i++) {
-          const x1 = cx + Math.cos(rot) * outerR;
-          const y1 = cy + Math.sin(rot) * outerR;
-          ctx.lineTo(x1, y1);
-          rot += step;
+      // SURESH marking (tiny)
+      ctx.shadowBlur = 0;
+      ctx.font = 'bold 9px "Inter", sans-serif';
+      ctx.fillStyle = '#082f49';
+      ctx.textAlign = 'center';
+      ctx.fillText('SURESH', px, py + s * 0.32);
 
-          const x2 = cx + Math.cos(rot) * innerR;
-          const y2 = cy + Math.sin(rot) * innerR;
-          ctx.lineTo(x2, y2);
-          rot += step;
-        }
-        ctx.closePath();
-      }
+      ctx.restore();
+    }
 
-      // --- handle click on canvas (catching stars) ---
-      function handleCanvasClick(e) {
-        if (!gameActive) return;
+    // ---- Scanline / vignette overlay ----
+    ctx.save();
+    const vignette = ctx.createRadialGradient(W / 2, H / 2, H * 0.3, W / 2, H / 2, H * 0.75);
+    vignette.addColorStop(0, 'transparent');
+    vignette.addColorStop(1, '#00000088');
+    ctx.fillStyle = vignette;
+    ctx.fillRect(0, 0, W, H);
+    ctx.restore();
+  }
 
-        const rect = canvas.getBoundingClientRect();
-        const scaleX = canvas.width / rect.width;   // canvas physical size / display size
-        const scaleY = canvas.height / rect.height;
+  /* ==============================
+     MAIN LOOP
+  ============================== */
+  function loop() {
+    update();
+    render();
+    requestAnimationFrame(loop);
+  }
 
-        let clientX, clientY;
+  /* ==============================
+     INPUT HANDLING
+  ============================== */
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft'  || e.key === 'a' || e.key === 'A') { keys.left  = true; e.preventDefault(); }
+    if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') { keys.right = true; e.preventDefault(); }
+    if (e.key === ' ' || e.key === 'p' || e.key === 'P') {
+      if (gameState === 'playing') { gameState = 'paused'; overlayTitle.textContent = 'PAUSED'; overlayScore.textContent = score; overlay.classList.add('show'); }
+      else if (gameState === 'paused') { gameState = 'playing'; overlay.classList.remove('show'); }
+      e.preventDefault();
+    }
+  });
 
-        if (e.touches) {
-          // touch event
-          clientX = e.touches[0].clientX;
-          clientY = e.touches[0].clientY;
-          e.preventDefault();
-        } else {
-          clientX = e.clientX;
-          clientY = e.clientY;
-        }
+  document.addEventListener('keyup', (e) => {
+    if (e.key === 'ArrowLeft'  || e.key === 'a' || e.key === 'A') keys.left  = false;
+    if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') keys.right = false;
+  });
 
-        const canvasX = (clientX - rect.left) * scaleX;
-        const canvasY = (clientY - rect.top) * scaleY;
-
-        // check collision with stars (from topmost / last to first)
-        for (let i = stars.length - 1; i >= 0; i--) {
-          const s = stars[i];
-          const dx = canvasX - s.x;
-          const dy = canvasY - s.y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          const catchDist = s.radius + CATCH_RADIUS;
-
-          if (dist <= catchDist) {
-            // caught!
-            stars.splice(i, 1);
-            score++;
-            scoreSpan.textContent = score;
-
-            // visual feedback
-            if (score === 1) messageBox.textContent = '🌟 great!';
-            else if (score === 10) messageBox.textContent = '🔥 you are on fire!';
-            else if (score === 25) messageBox.textContent = '💫 SURESH power!';
-            else if (score === 50) messageBox.textContent = '🏆 legend!';
-            else if (score % 20 === 0) messageBox.textContent = `✨ ${score} stars ✨`;
-            else messageBox.textContent = '⭐ +1';
-
-            // small audio-less feedback, just redraw
-            break; // only catch one star per click
-          }
-        }
-      }
-
-      // --- game loop ---
-      function gameLoop() {
-        if (gameActive) {
-          updateGame();
-        }
-        draw();
-        requestAnimationFrame(gameLoop);
-      }
-
-      // --- restart ---
-      function restartGame() {
-        resetGame();
-        messageBox.textContent = '✨ catch the stars ✨';
-        // ensure stars are not empty
-        if (stars.length === 0) {
-          for (let i = 0; i < 3; i++) stars.push(createStar());
-        }
-      }
-
-      // --- event listeners ---
-      canvas.addEventListener('click', handleCanvasClick);
-      canvas.addEventListener('touchstart', (e) => {
-        e.preventDefault(); // prevent scrolling
-        handleCanvasClick(e);
-      }, { passive: false });
-
-      document.getElementById('restartButton').addEventListener('click', restartGame);
-
-      // prevent context menu on canvas
-      canvas.addEventListener('contextmenu', (e) => e.preventDefault());
-
-      // initialize
-      resetGame();
-
-      // start the loop
-      gameLoop();
-    })();
-  </script>
-</body>
-</html>
+  // Touch / mouse drag on canvas
+  function movePlayerFromPointer(e) {
+    if (gameState !== 'playing') return;
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    let clientX;
+    if (e.touches) {
+      clientX = e.touches[0].clientX;
+      e.preventDefault();
+    } else {
+      clientX = e.clientX;
+    }
+    const canvasX = (clientX - rect.left) * scaleX;
+    player.x = Math.max(player.size / 2 + 6, Math.min(W - player.size / 2 - 6, canvasX));
+ 
